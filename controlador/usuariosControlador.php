@@ -2,12 +2,11 @@
 class ControladorUsuarios
 {
 
-    // 5.2. Registro con validación de correo existente y términos
     public function ctrRegistroUsuario()
     {
         if (isset($_POST["regEmail"])) {
             if (!isset($_POST["checkTerminos"])) {
-                echo '<div class="custom-alert error">Debes aceptar los Términos y Condiciones.</div>';
+                echo '<div class="alert alert-danger custom-alert">Debes aceptar los Términos y Condiciones para registrarte.</div>';
                 return;
             }
 
@@ -15,7 +14,12 @@ class ControladorUsuarios
             $existe = UsuarioModelo::mdlMostrarUsuario("email", $email);
 
             if ($existe) {
-                echo '<div class="custom-alert error">El correo ya se encuentra registrado. Intenta iniciar sesión.</div>';
+                echo '<div class="alert alert-danger custom-alert">El correo electrónico ya se encuentra registrado.</div>';
+                return;
+            }
+
+            if (strlen($_POST["regPassword"]) < 6) {
+                echo '<div class="alert alert-danger custom-alert">La contraseña debe tener un mínimo de 6 caracteres.</div>';
                 return;
             }
 
@@ -28,7 +32,7 @@ class ControladorUsuarios
             ];
 
             if (UsuarioModelo::mdlRegistroUsuario($datos) === "ok") {
-                echo '<script>alert("¡Bienvenida! Cuenta creada exitosamente."); window.location="index.php?ruta=login";</script>';
+                echo '<script>alert("¡Cuenta creada exitosamente! Inicia sesión."); window.location = "index.php?ruta=login";</script>';
             }
         }
     }
@@ -51,12 +55,11 @@ class ControladorUsuarios
                     echo '<script>window.location = "index.php?ruta=citas";</script>';
                 }
             } else {
-                echo '<div class="custom-alert error">Correo o contraseña incorrectos.</div>';
+                echo '<div class="alert alert-danger custom-alert">Correo o contraseña incorrectos.</div>';
             }
         }
     }
 
-    // En controlador/usuariosControlador.php
     public function ctrSolicitarCodigoRecuperacion()
     {
         if (isset($_POST["recEmail"])) {
@@ -64,7 +67,7 @@ class ControladorUsuarios
             $usuario = UsuarioModelo::mdlMostrarUsuario("email", $email);
 
             if (!$usuario) {
-                echo '<div class="alert alert-danger custom-alert">El correo no coincide con ninguna cuenta.</div>';
+                echo '<div class="alert alert-danger custom-alert">El correo no coincide con ninguna cuenta registrada.</div>';
                 return;
             }
 
@@ -72,14 +75,14 @@ class ControladorUsuarios
             $expiracion = date("Y-m-d H:i:s", strtotime("+10 minutes"));
             UsuarioModelo::mdlGuardarTokenRecuperacion($usuario["id"], $codigo, $expiracion);
 
-            // Envío SMTP Directo con Gmail y Contraseña de Aplicación
+            // Envío SMTP Directo con Contraseña de Aplicación de Gmail
             $smtpHost = "ssl://smtp.gmail.com";
             $smtpPort = 465;
-            $gmailUser = "tucorreo@gmail.com";              // Tu correo Gmail
-            $gmailAppPass = "abcd efgh ijkl mnop";          // Contraseña de Aplicación de 16 letras
+            $gmailUser = "tucorreo@gmail.com";              // COLOCA AQUÍ TU CORREO DE GMAIL
+            $gmailAppPass = "abcd efgh ijkl mnop";          // COLOCA AQUÍ TU CONTRASEÑA DE APLICACIÓN DE 16 DÍGITOS
 
-            $asunto = "=?UTF-8?B?" . base64_encode("Código de Recuperación - El Rulo De Maye") . "?=";
-            $cuerpo = "Hola " . $usuario["nombre"] . ",\r\n\r\nTu código de verificación es: " . $codigo . "\r\n\r\nEste código vencerá en 10 minutos.\r\n\r\nEl Rulo De Maye.";
+            $asunto = "=?UTF-8?B?" . base64_encode("Código de Verificación - El Rulo De Maye") . "?=";
+            $cuerpo = "Hola " . $usuario["nombre"] . ",\r\n\r\nTu código de recuperación es: " . $codigo . "\r\n\r\nVence en exactamente 10 minutos.\r\n\r\nEl Rulo De Maye.";
 
             $socket = @fsockopen($smtpHost, $smtpPort, $errno, $errstr, 15);
             if ($socket) {
@@ -115,12 +118,17 @@ class ControladorUsuarios
             $codigo = trim($_POST["codigo6"]);
             $nuevaPass = $_POST["nuevaPassword"];
 
+            if (strlen($nuevaPass) < 6) {
+                echo '<div class="alert alert-danger custom-alert">La nueva contraseña debe tener al menos 6 caracteres.</div>';
+                return;
+            }
+
             $usuario = UsuarioModelo::mdlMostrarUsuario("email", $email);
 
             if ($usuario && $usuario["token_recuperacion"] === $codigo) {
                 $ahora = date("Y-m-d H:i:s");
                 if ($ahora > $usuario["token_expiracion"]) {
-                    echo '<div class="custom-alert error">El código ha vencido (superó los 10 minutos). Solicita uno nuevo.</div>';
+                    echo '<div class="alert alert-danger custom-alert">El código de 6 dígitos ha expirado (más de 10 minutos). Solicita uno nuevo.</div>';
                     return;
                 }
 
@@ -128,32 +136,29 @@ class ControladorUsuarios
                 UsuarioModelo::mdlActualizarPassword($usuario["id"], $passHash);
                 unset($_SESSION["email_recuperacion"]);
 
-                echo '<script>alert("¡Contraseña actualizada con éxito! Ya puedes ingresar."); window.location = "index.php?ruta=login";</script>';
+                echo '<script>alert("¡Contraseña actualizada con éxito! Ya puedes iniciar sesión."); window.location = "index.php?ruta=login";</script>';
             } else {
-                echo '<div class="custom-alert error">Código de 6 dígitos inválido.</div>';
+                echo '<div class="alert alert-danger custom-alert">El código ingresado es incorrecto.</div>';
             }
         }
     }
 
-    // 8. Validador de choques de horario con alerta para el cliente
     public function ctrNuevaCita()
     {
         if (isset($_POST["agendarFecha"])) {
             $fecha = $_POST["agendarFecha"];
             $hora = $_POST["agendarHora"];
 
-            // 1. Validar si Maye ya tiene una cita reservada a esa misma hora
             $existeCita = UsuarioModelo::mdlVerificarDisponibilidad($fecha, $hora);
             if ($existeCita) {
-                return '<div class="custom-alert error">⚠️ Maye ya tiene un turno agendado a las ' . substr($hora, 0, 5) . ' el día ' . $fecha . '. Por favor escoge otro horario.</div>';
+                return '<div class="alert alert-danger custom-alert">⚠️ Maye ya tiene una cita reservada a las ' . substr($hora, 0, 5) . ' en esa fecha. Por favor escoge otra hora.</div>';
             }
 
-            // 2. Validar si Maye atiende ese día según sus horarios
-            $numeroDia = date('N', strtotime($fecha)); // 1 (Lunes) a 7 (Domingo)
+            $numeroDia = date('N', strtotime($fecha));
             $horarioDia = UsuarioModelo::mdlObtenerHorarioDia($numeroDia);
 
             if (!$horarioDia || $horarioDia["activo"] == 0) {
-                return '<div class="custom-alert info">🌸 Maye no atiende los días domingos o descansos programados.</div>';
+                return '<div class="alert alert-warning custom-alert">🌸 Maye no atiende citas el día seleccionado.</div>';
             }
 
             $metodoPago = $_POST["metodoPago"] ?? 'efectivo';
@@ -171,36 +176,92 @@ class ControladorUsuarios
             ];
 
             if (UsuarioModelo::mdlCrearCita($datos) === "ok") {
-                echo '<script>alert("¡Cita reservada exitosamente!"); window.location="index.php?ruta=citas";</script>';
+                echo '<script>alert("¡Tu cita ha sido reservada con éxito!"); window.location="index.php?ruta=citas";</script>';
             }
         }
         return '';
     }
 
-    // 10. Actualización de perfil y subida de foto
     public function ctrActualizarPerfil()
     {
-        if (isset($_POST["perfilNombre"])) {
-            $nombre = strip_tags($_POST["perfilNombre"]);
-            $telefono = strip_tags($_POST["perfilTelefono"]);
-            $fotoRuta = null;
+        $alerta = "";
 
-            if (isset($_FILES["fotoPerfil"]) && !empty($_FILES["fotoPerfil"]["tmp_name"])) {
-                $dir = "vista/imagenes/usuarios/";
-                if (!file_exists($dir)) mkdir($dir, 0777, true);
+        // 1. Guardar Nombre y Teléfono
+        if (isset($_POST["btnActualizarDatos"])) {
+            $nombre = strip_tags(trim($_POST["perfilNombre"]));
+            $telefono = strip_tags(trim($_POST["perfilTelefono"]));
 
-                $extension = pathinfo($_FILES["fotoPerfil"]["name"], PATHINFO_EXTENSION);
-                $fotoRuta = $dir . "user_" . $_SESSION["id"] . "_" . time() . "." . $extension;
-                move_uploaded_file($_FILES["fotoPerfil"]["tmp_name"], $fotoRuta);
+            UsuarioModelo::mdlActualizarPerfil($_SESSION["id"], $nombre, $telefono);
+            $_SESSION["nombre"] = $nombre;
+
+            $alerta = '<div class="alert alert-success custom-alert d-flex align-items-center gap-2 mb-3">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>Tus datos han sido actualizados con éxito.</span>
+                   </div>';
+        }
+
+        // 2. Subida / Cambio de Foto de Perfil
+        if (isset($_FILES["fotoPerfil"]) && !empty($_FILES["fotoPerfil"]["tmp_name"])) {
+            $directorio = "vista/imagenes/usuarios/";
+            if (!file_exists($directorio)) {
+                mkdir($directorio, 0777, true);
             }
 
-            UsuarioModelo::mdlActualizarPerfil($_SESSION["id"], $nombre, $telefono, $fotoRuta);
-            $_SESSION["nombre"] = $nombre;
-            if ($fotoRuta) $_SESSION["foto"] = $fotoRuta;
+            $usuario = UsuarioModelo::mdlMostrarUsuario("id", $_SESSION["id"]);
 
-            echo '<script>window.location="index.php?ruta=perfil";</script>';
+            // Borrar foto previa si existe y no es la predeterminada
+            if (!empty($usuario["foto"]) && file_exists($usuario["foto"]) && strpos($usuario["foto"], "default.png") === false) {
+                unlink($usuario["foto"]);
+            }
+
+            $extension = strtolower(pathinfo($_FILES["fotoPerfil"]["name"], PATHINFO_EXTENSION));
+            $permitidas = ["jpg", "jpeg", "png", "webp"];
+
+            if (in_array($extension, $permitidas)) {
+                $nuevaRuta = $directorio . "user_" . $_SESSION["id"] . "_" . time() . "." . $extension;
+
+                if (move_uploaded_file($_FILES["fotoPerfil"]["tmp_name"], $nuevaRuta)) {
+                    UsuarioModelo::mdlActualizarFotoPerfil($_SESSION["id"], $nuevaRuta);
+                    $_SESSION["foto"] = $nuevaRuta;
+
+                    $alerta = '<div class="alert alert-success custom-alert d-flex align-items-center gap-2 mb-3">
+                            <i class="bi bi-camera-fill"></i>
+                            <span>Foto de perfil actualizada correctamente.</span>
+                           </div>';
+                } else {
+                    $alerta = '<div class="alert alert-danger custom-alert d-flex align-items-center gap-2 mb-3">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                            <span>Hubo un problema al subir la imagen al servidor.</span>
+                           </div>';
+                }
+            } else {
+                $alerta = '<div class="alert alert-warning custom-alert d-flex align-items-center gap-2 mb-3">
+                        <i class="bi bi-exclamation-circle-fill"></i>
+                        <span>Formato no admitido. Usa JPG, PNG o WEBP.</span>
+                       </div>';
+            }
         }
+
+        // 3. Eliminar Foto de Perfil
+        if (isset($_POST["btnEliminarFoto"])) {
+            $usuario = UsuarioModelo::mdlMostrarUsuario("id", $_SESSION["id"]);
+
+            if (!empty($usuario["foto"]) && file_exists($usuario["foto"]) && strpos($usuario["foto"], "default.png") === false) {
+                unlink($usuario["foto"]);
+            }
+
+            UsuarioModelo::mdlActualizarFotoPerfil($_SESSION["id"], null);
+            $_SESSION["foto"] = null;
+
+            $alerta = '<div class="alert alert-info custom-alert d-flex align-items-center gap-2 mb-3">
+                    <i class="bi bi-trash3-fill"></i>
+                    <span>Foto de perfil eliminada. Ahora se muestran tus iniciales.</span>
+                   </div>';
+        }
+
+        return $alerta;
     }
+
     public function ctrCambiarPasswordPerfil()
     {
         if (isset($_POST["btnCambiarPass"])) {
@@ -208,31 +269,25 @@ class ControladorUsuarios
             $passActual = $_POST["passActual"];
             $passNueva = $_POST["passNueva"];
 
-            // 1. Validar longitud mínima
             if (strlen($passNueva) < 6) {
                 echo '<div class="alert alert-danger custom-alert mt-3">La nueva contraseña debe tener al menos 6 caracteres.</div>';
                 return;
             }
 
-            // 2. Obtener el usuario actual para verificar el hash existente
             $usuario = UsuarioModelo::mdlMostrarUsuario("id", $idUsuario);
 
             if (!$usuario || !password_verify($passActual, $usuario["password"])) {
-                echo '<div class="alert alert-danger custom-alert mt-3">La contraseña actual no coincide.</div>';
+                echo '<div class="alert alert-danger custom-alert mt-3">La contraseña actual ingresada es incorrecta.</div>';
                 return;
             }
 
-            // 3. Encriptar y actualizar
             $passHash = password_hash($passNueva, PASSWORD_BCRYPT);
             $respuesta = UsuarioModelo::mdlActualizarPasswordPerfil($idUsuario, $passHash);
 
             if ($respuesta === "ok") {
-                echo '<script>
-                alert("¡Contraseña actualizada con éxito!");
-                window.location = "index.php?ruta=perfil";
-            </script>';
+                echo '<script>alert("¡Contraseña actualizada exitosamente!"); window.location = "index.php?ruta=perfil";</script>';
             } else {
-                echo '<div class="alert alert-danger custom-alert mt-3">Ocurrió un error al actualizar la contraseña.</div>';
+                echo '<div class="alert alert-danger custom-alert mt-3">Error al actualizar la contraseña.</div>';
             }
         }
     }

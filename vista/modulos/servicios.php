@@ -3,11 +3,11 @@ $servicios = UsuarioModelo::mdlObtenerServicios();
 ?>
 <section class="section">
     <div style="text-align:center; margin-bottom: 30px;">
-        <h1 style="font-family:'Playfair Display', serif; font-size:2.6rem;">Catálogo de Belleza</h1>
+        <h1 style="font-family:'Playfair Display', serif; font-size:2.6rem;">Catálogo de Servicios</h1>
         <p style="color: var(--text-light);">Cuidado premium para tus manos, pies y estilo integral</p>
     </div>
 
-    <!-- 3. Botones de Filtro por Categorías -->
+    <!-- Botones de Filtro por Categorías -->
     <div class="services-filter">
         <button class="filter-btn active" data-filter="todos">Todos los Servicios</button>
         <button class="filter-btn" data-filter="manicure">💅 Manicure</button>
@@ -34,7 +34,7 @@ $servicios = UsuarioModelo::mdlObtenerServicios();
                         <span style="font-weight:700; color:var(--primary-dark); font-size:1.15rem;">
                             $<?= number_format($s["precio"], 0, ',', '.') ?> COP
                         </span>
-                        <a href="index.php?ruta=citas&servicio=<?= $s['id'] ?>" class="btn-primary" style="padding: 8px 18px; font-size: 0.85rem;">Agendar</a>
+                        <a href="index.php?ruta=citas&servicio=<?= $s['id'] ?>" class="btn-primary-custom px-3 py-1" style="font-size: 0.85rem;">Agendar</a>
                     <?php else: ?>
                         <span style="color:#999; font-weight:600; font-size:0.85rem;">🌸 Próximamente</span>
                     <?php endif; ?>

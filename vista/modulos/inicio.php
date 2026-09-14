@@ -1,6 +1,6 @@
 <section class="hero">
     <div>
-        <!-- 1. Cartel de Evolución Ampliado con Ambos Logos -->
+        <!-- Cartel de Evolución Ampliado con Ambos Logos -->
         <div class="rebranding-container">
             <div class="rebranding-header">✨ Nueva Imagen, la Misma Calidad</div>
             <div class="brand-card-3d">
@@ -29,16 +29,16 @@
         <p>Especialistas en embellecimiento y cuidado de uñas: Esmaltado tradicional, semipermanente, Rubber, Capping y extensiones esculturales en Poligel, Acrílico y Soft Gel.</p>
 
         <div style="display:flex; gap:14px; flex-wrap:wrap;">
-            <a href="index.php?ruta=citas" class="btn-primary">Reservar Cita</a>
-            <a href="index.php?ruta=servicios" class="btn-primary btn-outline">Ver Catálogo</a>
+            <a href="index.php?ruta=citas" class="btn-primary-custom px-4 py-2">Reservar Cita</a>
+            <a href="index.php?ruta=servicios" class="btn-primary-custom btn-outline px-4 py-2">Ver Catálogo</a>
         </div>
     </div>
 
-    <div style="display:flex; justify-content:center;">
-        <div style="width:100%; max-width:380px; aspect-ratio:1/1; background:linear-gradient(135deg,#fff0f2,#ffffff); border-radius:40px; box-shadow:var(--shadow); display:flex; flex-direction:column; align-items:center; justify-content:center; border:4px solid #fff; padding:20px; text-align:center;">
+    <div class="d-flex justify-content-center">
+        <div class="hero-banner-box">
             <img src="vista/img/logo_maye.jpeg" style="max-height:160px; object-fit:contain;" alt="Logo" onerror="this.style.display='none'">
             <h3 style="font-family:'Playfair Display',serif; color:var(--primary-dark); margin-top:15px;">El Rulo De Maye</h3>
-            <p style="font-size:0.85rem; color:var(--text-light);">Tu espacio de bienestar y estilo.</p>
+            <p style="font-size:0.85rem; color:var(--text-light);">Tu espacio de bienestar, uñas y estilo.</p>
         </div>
     </div>
 </section>
