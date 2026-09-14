@@ -6,7 +6,7 @@ class conexion{
         $usuariosServidor = "root";
 
         // nombre del a base de datos
-        $baseDatos = "";
+        $baseDatos = "el_rulo_de_maye";
 
         $password = "";
 

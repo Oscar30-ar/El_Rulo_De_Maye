@@ -1,6 +1,8 @@
 <?php
-
+session_start();
 require_once "controlador/plantillaControlador.php";
+require_once "controlador/usuariosControlador.php";
+require_once "modelo/usuarioModelo.php";
 
-$objPlantilla = new PlantillaControlador();
-$objPlantilla->crtPlantilla();
+$plantilla = new PlantillaControlador();
+$plantilla->ctrPlantilla();
