@@ -339,30 +339,33 @@ class ControladorUsuarios
             $pagoEstado = 'pendiente';
             $refPago = ($metodoPago === 'nequi_daviplata') ? 'TRANSF-' . strtoupper(uniqid()) : null;
 
-            // En ctrNuevaCita() dentro de ControladorUsuarios:
-            // ...
+            // Subir foto de referencia / diseño (Unificado)
             $fotoRef = null;
             if (isset($_FILES["fotoReferencia"]) && !empty($_FILES["fotoReferencia"]["tmp_name"])) {
                 $dirRef = "vista/imagenes/referencias/";
                 if (!file_exists($dirRef)) {
                     mkdir($dirRef, 0777, true);
                 }
+
                 $ext = strtolower(pathinfo($_FILES["fotoReferencia"]["name"], PATHINFO_EXTENSION));
                 if (in_array($ext, ["jpg", "jpeg", "png", "webp"])) {
-                    $fotoRef = $dirRef . "ref_" . time() . "_" . uniqid() . "." . $ext;
-                    move_uploaded_file($_FILES["fotoReferencia"]["tmp_name"], $fotoRef);
+                    $nombreFinal = "ref_" . time() . "_" . uniqid() . "." . $ext;
+                    $destino = $dirRef . $nombreFinal;
+                    if (move_uploaded_file($_FILES["fotoReferencia"]["tmp_name"], $destino)) {
+                        $fotoRef = $destino;
+                    }
                 }
             }
 
             $datos = [
-                "usuario_id" => $_SESSION["id"],
-                "servicio_id" => $servicioId,
-                "fecha" => $fecha,
-                "hora" => $hora,
-                "pago_estado" => $pagoEstado,
+                "usuario_id"      => $_SESSION["id"],
+                "servicio_id"     => $servicioId,
+                "fecha"           => $fecha,
+                "hora"            => $hora,
+                "pago_estado"     => $pagoEstado,
                 "referencia_pago" => $refPago,
-                "notas" => strip_tags($_POST["agendarNotas"] ?? ''),
-                "foto_referencia" => $fotoRef // <- Se añade al arreglo
+                "notas"           => strip_tags($_POST["agendarNotas"] ?? ''),
+                "foto_referencia" => $fotoRef
             ];
 
             if (UsuarioModelo::mdlCrearCita($datos) === "ok") {
@@ -390,7 +393,6 @@ class ControladorUsuarios
         }
         return '';
     }
-
     public function ctrActualizarPerfil()
     {
         $alerta = "";

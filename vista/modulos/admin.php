@@ -337,13 +337,20 @@ if (isset($_GET["editar_srv"])) {
                                         <small class="d-block text-muted"><?= $c["duracion_minutos"] ?> min | $<?= number_format($c["precio"], 0, ',', '.') ?> COP</small>
                                     </td>
                                     <!-- Miniatura Foto de Referencia / Pinterest -->
-                                    <td class="text-center">
-                                        <?php if (!empty($c["foto_referencia"])): ?>
-                                            <a href="javascript:void(0)" onclick="mostrarFotoModal('<?= htmlspecialchars($c['foto_referencia']) ?>', '<?= htmlspecialchars($c['cliente'], ENT_QUOTES) ?>')">
-                                                <img src="<?= htmlspecialchars($c['foto_referencia']) ?>" class="rounded-3 shadow-xs border" style="width: 45px; height: 45px; object-fit: cover;" title="Clic para ver diseño de referencia">
-                                            </a>
+                                    <td class="align-middle">
+                                        <?php if (!empty($c["foto_referencia"]) && file_exists($c["foto_referencia"])): ?>
+                                            <button type="button"
+                                                class="btn btn-sm btn-outline-primary rounded-pill py-1 px-2 d-inline-flex align-items-center gap-1 shadow-xs"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalVerDisenoReferencia"
+                                                data-img="<?= htmlspecialchars($c['foto_referencia']) ?>"
+                                                data-cliente="<?= htmlspecialchars($c['cliente'] ?? 'Clienta') ?>"
+                                                onclick="cargarDisenoModal(this)">
+                                                <img src="<?= htmlspecialchars($c['foto_referencia']) ?>" class="rounded-circle border" style="width: 24px; height: 24px; object-fit: cover;">
+                                                <span class="small fw-semibold">Ver diseño</span>
+                                            </button>
                                         <?php else: ?>
-                                            <span class="text-muted small"><em>Sin foto</em></span>
+                                            <span class="text-muted small fst-italic">Sin diseño</span>
                                         <?php endif; ?>
                                     </td>
                                     <td style="max-width: 180px;">
@@ -1122,21 +1129,38 @@ if (isset($_GET["editar_srv"])) {
         return partes[0].substring(0, 2).toUpperCase();
     }
 </script>
-<!-- MODAL PARA VER FOTO DE REFERENCIA / INSPIRACIÓN EN GRANDE -->
-<div class="modal fade" id="modalFotoReferencia" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
+
+<!-- MODAL: VER DISEÑO EN GRANDE (FUERA DE CONTENEDORES CON OVERFLOW) -->
+<div class="modal fade" id="modalVerDisenoReferencia" tabindex="-1" aria-labelledby="modalDisenoClienteTitulo" aria-hidden="true" style="z-index: 1060;">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 440px;">
         <div class="modal-content rounded-4 border-0 shadow">
             <div class="modal-header border-bottom-0 pb-0">
-                <h6 class="modal-title font-playfair color-primary-dark fw-bold" id="modalFotoTitulo">Inspiración de la Clienta</h6>
+                <h6 class="modal-title font-playfair color-primary-dark fw-bold" id="modalDisenoClienteTitulo">
+                    <i class="bi bi-image text-danger me-1"></i> Diseño de Referencia
+                </h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body text-center p-3">
-                <img id="imgReferenciaGrande" src="" class="img-fluid rounded-3 shadow-xs" style="max-height: 70vh; object-fit: contain;">
+                <div class="rounded-3 overflow-hidden bg-light border d-flex align-items-center justify-content-center mb-2" style="min-height: 280px; max-height: 480px;">
+                    <img src="" id="imgModalDisenoReferencia" class="img-fluid rounded-2" style="max-height: 460px; width: 100%; object-fit: contain;">
+                </div>
+                <small class="text-muted d-block" style="font-size: 0.78rem;">Foto de inspiración enviada por la clienta.</small>
             </div>
         </div>
     </div>
 </div>
+<script>
+    function cargarDisenoModal(btn) {
+        const rutaImg = btn.getAttribute('data-img');
+        const nombreCliente = btn.getAttribute('data-cliente');
 
+        const img = document.getElementById('imgModalDisenoReferencia');
+        const titulo = document.getElementById('modalDisenoClienteTitulo');
+
+        if (img) img.src = rutaImg;
+        if (titulo) titulo.innerHTML = '<i class="bi bi-image text-danger me-1"></i> Diseño de: ' + nombreCliente;
+    }
+</script>
 <script>
     // Previsualización de imágenes antes de subirlas a la galería
     function previsualizarImagen(input, idImg) {
@@ -1177,14 +1201,6 @@ if (isset($_GET["editar_srv"])) {
             }
             reader.readAsDataURL(file);
         }
-    }
-
-    // Modal para foto de inspiración
-    function mostrarFotoModal(rutaFoto, cliente) {
-        document.getElementById('imgReferenciaGrande').src = rutaFoto;
-        document.getElementById('modalFotoTitulo').textContent = 'Inspiración enviada por ' + cliente;
-        const modal = new bootstrap.Modal(document.getElementById('modalFotoReferencia'));
-        modal.show();
     }
 
     // Abrir modal de edición de clienta

@@ -38,9 +38,7 @@ $fechaHoy = date('Y-m-d');
                 <?php if (!empty($alertaCita)): ?>
                     <?= $alertaCita ?>
                 <?php endif; ?>
-
-                <form method="POST" id="formAgendarCita">
-
+                <form method="POST" enctype="multipart/form-data" id="formAgendarCita">
                     <!-- Selección de Servicio -->
                     <div class="mb-3">
                         <label class="form-label small fw-semibold">Servicio</label>
@@ -102,17 +100,43 @@ $fechaHoy = date('Y-m-d');
                         <textarea name="agendarNotas" class="form-control" rows="2" placeholder="Ej: Traigo retiro de acrílico anterior, uña partida, diseño especial..."></textarea>
                     </div>
 
-                    <!-- FOTO DE REFERENCIA / INSPIRACIÓN PINTEREST O INSTAGRAM -->
-                    <div class="mb-3 text-start">
-                        <label class="form-label small fw-semibold d-flex align-items-center justify-content-between">
-                            <span><i class="bi bi-image text-primary me-1"></i> Foto de Referencia / Inspiración</span>
-                            <span class="badge bg-light text-secondary border small">Opcional</span>
+                    <!-- Campo Foto de Referencia / Diseño -->
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">
+                            <i class="bi bi-image text-danger me-1"></i> ¿Tienes un diseño o foto de referencia? (Opcional)
                         </label>
-                        <input type="file" name="fotoReferencia" class="form-control form-control-sm" accept="image/*">
-                        <small class="text-muted" style="font-size: 0.75rem;">
-                            ¿Viste un diseño que te encantó en Instagram o Pinterest? Adjúntalo para que Maye lo prepare especialmente para ti.
-                        </small>
+                        <div class="border rounded-3 p-3 bg-white text-center">
+                            <input type="file"
+                                name="fotoReferencia"
+                                id="fotoReferencia"
+                                class="form-control form-control-sm mb-2"
+                                accept="image/jpeg,image/png,image/webp"
+                                onchange="previsualizarDisenoCita(this)">
+
+                            <div id="previewDisenoCitaWrapper" class="d-none mt-2">
+                                <img id="imgPreviewDisenoCita" src="" class="rounded-3 border shadow-xs" style="max-height: 140px; max-width: 100%; object-fit: contain;">
+                                <div class="small text-muted mt-1">Diseño seleccionado</div>
+                            </div>
+                            <small class="text-muted d-block" style="font-size: 0.75rem;">Formatos admitidos: JPG, PNG o WEBP (máx. 5MB).</small>
+                        </div>
                     </div>
+
+                    <script>
+                        function previsualizarDisenoCita(input) {
+                            const wrapper = document.getElementById('previewDisenoCitaWrapper');
+                            const img = document.getElementById('imgPreviewDisenoCita');
+                            if (input.files && input.files[0]) {
+                                const reader = new FileReader();
+                                reader.onload = function(e) {
+                                    img.src = e.target.result;
+                                    wrapper.classList.remove('d-none');
+                                };
+                                reader.readAsDataURL(input.files[0]);
+                            } else {
+                                wrapper.classList.add('d-none');
+                            }
+                        }
+                    </script>
 
                     <button type="submit" class="btn-primary-custom w-100 py-2">Confirmar Cita</button>
                 </form>

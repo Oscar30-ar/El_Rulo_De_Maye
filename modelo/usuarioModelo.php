@@ -117,7 +117,11 @@ class UsuarioModelo
 
     public static function mdlCrearCita($datos)
     {
-        $stmt = Conexion::conectar()->prepare("INSERT INTO citas (usuario_id, servicio_id, fecha, hora, estado, pago_estado, referencia_pago, notas) VALUES (:usuario_id, :servicio_id, :fecha, :hora, 'pendiente', :pago_estado, :referencia_pago, :notas)");
+        $stmt = Conexion::conectar()->prepare("
+            INSERT INTO citas (usuario_id, servicio_id, fecha, hora, pago_estado, referencia_pago, notas, foto_referencia) 
+            VALUES (:usuario_id, :servicio_id, :fecha, :hora, :pago_estado, :referencia_pago, :notas, :foto_referencia)
+        ");
+
         $stmt->bindParam(":usuario_id", $datos["usuario_id"], PDO::PARAM_INT);
         $stmt->bindParam(":servicio_id", $datos["servicio_id"], PDO::PARAM_INT);
         $stmt->bindParam(":fecha", $datos["fecha"], PDO::PARAM_STR);
@@ -125,9 +129,14 @@ class UsuarioModelo
         $stmt->bindParam(":pago_estado", $datos["pago_estado"], PDO::PARAM_STR);
         $stmt->bindParam(":referencia_pago", $datos["referencia_pago"], PDO::PARAM_STR);
         $stmt->bindParam(":notas", $datos["notas"], PDO::PARAM_STR);
-        return $stmt->execute() ? "ok" : "error";
-    }
+        $stmt->bindParam(":foto_referencia", $datos["foto_referencia"], PDO::PARAM_STR);
 
+        if ($stmt->execute()) {
+            return "ok";
+        } else {
+            return "error";
+        }
+    }
     public static function mdlListarCitas($usuario_id = null)
     {
         if ($usuario_id) {
@@ -525,8 +534,9 @@ class UsuarioModelo
         return $stmt->execute() ? "ok" : "error";
     }
 
-    public static function mdlObtenerDetalleReaccionesHistoria($historiaId) {
-    $stmt = Conexion::conectar()->prepare("
+    public static function mdlObtenerDetalleReaccionesHistoria($historiaId)
+    {
+        $stmt = Conexion::conectar()->prepare("
         SELECT r.id, r.usuario_id, r.reaccion, r.fecha, 
                COALESCE(u.nombre, 'Visitante anónima') AS cliente,
                u.foto, u.email, u.telefono
@@ -535,8 +545,8 @@ class UsuarioModelo
         WHERE r.historia_id = :hid
         ORDER BY r.fecha DESC
     ");
-    $stmt->bindParam(":hid", $historiaId, PDO::PARAM_INT);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+        $stmt->bindParam(":hid", $historiaId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
