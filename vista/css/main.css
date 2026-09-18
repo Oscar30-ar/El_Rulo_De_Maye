@@ -489,3 +489,347 @@ footer {
         font-size: 1.25rem;
     }
 }
+
+/* Slider Interactivo Antes / Después */
+.before-after-container {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  overflow: hidden;
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  user-select: none;
+}
+
+.ba-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ba-after-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  border-right: 3px solid #ffffff;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+}
+
+.ba-after-wrapper .ba-image {
+  width: 100%;
+  min-width: 100%;
+  object-fit: cover;
+}
+
+.ba-slider-range {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: ew-resize;
+  z-index: 20;
+}
+
+/* Insignia y Tarjeta de Fidelización Maye Lover */
+.maye-lover-card {
+  background: linear-gradient(135deg, #fff0f3, #ffffff);
+  border: 2px solid var(--primary);
+  border-radius: var(--border-radius);
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+
+.star-rating i {
+  color: #ffc107;
+  cursor: pointer;
+}
+
+@media (max-width: 991.98px) {
+  #btnHamburguesaNavbar {
+    z-index: 9999 !important;
+    position: relative;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  #navMayeMenu.show {
+    display: block !important;
+  }
+}
+
+/* Aro Degradado Estilo Instagram para el Avatar */
+.story-ring-container {
+    padding: 2.5px;
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.story-ring-container:hover {
+    transform: scale(1.06);
+}
+
+.pulse-story {
+    animation: pulseBorder 2s infinite;
+}
+
+@keyframes pulseBorder {
+    0% { box-shadow: 0 0 0 0 rgba(220, 39, 67, 0.4); }
+    70% { box-shadow: 0 0 0 8px rgba(220, 39, 67, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(220, 39, 67, 0); }
+}
+
+/* Modal Visor de Historias Fullscreen */
+.stories-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(15, 15, 15, 0.92);
+    backdrop-filter: blur(8px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stories-phone-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 410px;
+    height: 90vh;
+    max-height: 780px;
+    background: #000000;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    display: flex;
+    flex-column: column;
+}
+
+/* Barras de Progreso Superior */
+.stories-progress-bar-container {
+    position: absolute;
+    top: 12px; left: 12px; right: 12px;
+    display: flex;
+    gap: 5px;
+    z-index: 20;
+}
+
+.story-progress-segment {
+    flex: 1;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.35);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.story-progress-fill {
+    width: 0%;
+    height: 100%;
+    background: #ffffff;
+}
+
+/* Cabecera del usuario */
+.story-header-user {
+    position: absolute;
+    top: 25px; left: 15px; right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 20;
+}
+
+/* Media y pie de foto */
+.story-media-box {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.story-media-element {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.story-caption {
+    position: absolute;
+    bottom: 75px; left: 20px; right: 20px;
+    color: #ffffff;
+    font-size: 0.92rem;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.7);
+    z-index: 15;
+    text-align: center;
+}
+
+/* Zonas de toque lateral */
+.story-touch-zone {
+    position: absolute;
+    top: 0; bottom: 70px;
+    width: 45%;
+    z-index: 10;
+}
+.touch-left { left: 0; }
+.touch-right { right: 0; }
+
+/* Barra de Reacciones */
+.story-reactions-footer {
+    position: absolute;
+    bottom: 15px; left: 0; right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    z-index: 25;
+}
+
+.btn-story-reaction {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(5px);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 1.35rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s;
+}
+
+.btn-story-reaction:hover {
+    transform: scale(1.2);
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* Animación Emoji Flotante */
+.floating-reaction-emoji {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 3rem;
+    z-index: 30;
+    pointer-events: none;
+    animation: floatUpAndFade 1.2s forwards ease-out;
+}
+
+@keyframes floatUpAndFade {
+    0% { transform: translate(-50%, 0) scale(0.6); opacity: 1; }
+    100% { transform: translate(-50%, -180px) scale(1.6); opacity: 0; }
+}
+
+/* Aro Degradado Animado alrededor del logo */
+.story-avatar-wrapper {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  padding: 5px;
+  transition: transform 0.25s ease;
+}
+
+.story-avatar-wrapper:hover {
+  transform: scale(1.04);
+}
+
+.story-gradient-ring {
+  padding: 4px;
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  border-radius: 50%;
+  box-shadow: 0 4px 15px rgba(220, 39, 67, 0.35);
+  animation: rotateGradient 6s linear infinite;
+}
+
+.hero-center-logo {
+  width: 130px;
+  height: 130px;
+  object-fit: cover;
+  background: #ffffff;
+  display: block;
+}
+
+/* Badge 'HISTORIA' flotante bajo el logo */
+.story-live-pill {
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #e1306c;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 2px solid #ffffff;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+  white-space: nowrap;
+}
+
+/* Cartelito de aviso bajo el título */
+.badge-aviso-historia {
+  background: #fff0f3;
+  color: #b86b75;
+  border: 1px dashed #d48b94;
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.badge-aviso-historia:hover {
+  background: #ffe3e8;
+}
+
+/* ========================================================
+   ESTILOS: ACORDEÓN PREGUNTAS FRECUENTES (BOUTIQUE)
+======================================================== */
+.accordion-custom .accordion-item {
+    background: #ffffff;
+    border: 1px solid #f6dfe2 !important;
+    transition: all 0.25s ease;
+}
+
+.accordion-custom .accordion-item:hover {
+    border-color: #e8bdc3 !important;
+    box-shadow: 0 6px 18px rgba(212, 139, 148, 0.12) !important;
+}
+
+.accordion-custom .accordion-button {
+    background: #ffffff;
+    color: #2b2526;
+    font-size: 0.96rem;
+    padding: 1.1rem 1.25rem;
+    border-radius: 16px !important;
+    box-shadow: none !important;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.accordion-custom .accordion-button:not(.collapsed) {
+    background: linear-gradient(135deg, #fff7f8, #ffffff);
+    color: var(--primary-dark, #b86b75);
+}
+
+/* Flecha rotativa personalizada */
+.accordion-custom .accordion-button::after {
+    background-size: 1rem;
+    filter: invert(45%) sepia(20%) saturate(1200%) hue-rotate(310deg) brightness(95%) contrast(90%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.accordion-custom .accordion-body {
+    padding: 0 1.25rem 1.25rem 1.25rem;
+    color: #554e4f;
+    line-height: 1.6;
+}

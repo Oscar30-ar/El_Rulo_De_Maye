@@ -9,6 +9,7 @@ $ruta = $_GET["ruta"] ?? "inicio";
     <title>El Rulo De Maye | Salón de Belleza & Spa</title>
 
     <!-- Bootstrap 5 CSS & Bootstrap Icons -->
+     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
@@ -39,7 +40,7 @@ $ruta = $_GET["ruta"] ?? "inicio";
     </main>
 
     <!-- Botón Flotante de WhatsApp -->
-    <a href="https://wa.me/573001234567?text=Hola%20Maye!%20Deseo%20agendar%20o%20preguntar%20por%20un%20servicio" 
+    <a href="https://wa.me/573143183150?text=Hola%20Maye!%20Deseo%20agendar%20o%20preguntar%20por%20un%20servicio" 
        class="btn-whatsapp-float" 
        target="_blank" 
        rel="noopener noreferrer" 

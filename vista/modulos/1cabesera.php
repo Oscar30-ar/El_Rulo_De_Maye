@@ -33,41 +33,55 @@
     <!-- Archivos personalizados -->
 
     <link rel='stylesheet' type='text/css' media='screen' href='vista/css/main.css'>
-    <nav class="navbar navbar-expand-lg bg-white sticky-top py-2 border-bottom shadow-sm">
-        <div class="container-fluid px-lg-5">
-            <a class="navbar-brand d-flex align-items-center gap-2" href="index.php?ruta=inicio">
-                <img src="vista/imagenes/logo-nuevo.png" alt="Logo" class="logo-nav" onerror="this.style.display='none'">
-                <span class="logo-text">El Rulo De Maye</span>
-            </a>
 
-            <!-- Botón Hamburguesa con control explícito -->
-            <button class="navbar-toggler border-0 shadow-none" type="button" id="btnHamburguesaNavbar" data-bs-toggle="collapse" data-bs-target="#navMayeMenu" aria-controls="navMayeMenu" aria-expanded="false" aria-label="Toggle navigation">
+
+<nav class="navbar navbar-expand-lg bg-white sticky-top py-2 border-bottom shadow-sm">
+    <div class="container-fluid px-lg-5 position-relative d-flex align-items-center justify-content-between">
+        
+        <!-- Logo e Identidad -->
+        <a class="navbar-brand d-flex align-items-center gap-2" href="index.php?ruta=inicio">
+            <img src="vista/img/logo_maye.jpeg" alt="Logo" class="logo-nav" onerror="this.style.display='none'">
+            <span class="logo-text">El Rulo De Maye</span>
+        </a>
+
+        <?php if (isset($_SESSION["iniciarSesion"]) && $_SESSION["iniciarSesion"] === "ok"): ?>
+            <!-- CON SESIÓN: Botón Hamburguesa para Móvil -->
+            <button class="navbar-toggler border-0 shadow-none position-relative"
+                type="button"
+                id="btnHamburguesaNavbar"
+                onclick="toggleMenuMaye()"
+                aria-label="Menu"
+                style="z-index: 9999; cursor: pointer;">
                 <i class="bi bi-list fs-1 color-primary" id="iconoHamburguesa"></i>
             </button>
 
+            <!-- Menú Desplegable para Usuarias Logueadas -->
             <div class="collapse navbar-collapse" id="navMayeMenu">
                 <ul class="navbar-nav ms-auto align-items-lg-center gap-2 gap-lg-3 pt-3 pt-lg-0">
                     <li class="nav-item"><a class="nav-link" href="index.php?ruta=inicio">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="index.php?ruta=servicios">Servicios</a></li>
-
-                    <?php if (isset($_SESSION["iniciarSesion"]) && $_SESSION["iniciarSesion"] === "ok"): ?>
-                        <?php if ($_SESSION["rol"] === "admin"): ?>
-                            <li class="nav-item"><a class="nav-link" href="index.php?ruta=admin">Panel Admin</a></li>
-                        <?php else: ?>
-                            <li class="nav-item"><a class="nav-link" href="index.php?ruta=citas">Mis Citas</a></li>
-                        <?php endif; ?>
-                        <li class="nav-item"><a class="nav-link" href="index.php?ruta=perfil"><i class="bi bi-person-circle me-1"></i>Mi Perfil</a></li>
-                        <li class="nav-item"><a class="nav-link text-danger fw-bold" href="index.php?ruta=salir">Salir</a></li>
+                    
+                    <?php if ($_SESSION["rol"] === "admin"): ?>
+                        <li class="nav-item"><a class="nav-link text-primary fw-bold" href="index.php?ruta=admin">Panel Admin</a></li>
                     <?php else: ?>
-                        <li class="nav-item">
-                            <a href="index.php?ruta=login" class="btn-primary-custom px-4 py-2">
-                                <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesión
-                            </a>
-                        </li>
+                        <li class="nav-item"><a class="nav-link" href="index.php?ruta=citas">Mis Citas</a></li>
                     <?php endif; ?>
+
+                    <li class="nav-item"><a class="nav-link" href="index.php?ruta=perfil"><i class="bi bi-person-circle me-1"></i>Mi Perfil</a></li>
+                    <li class="nav-item"><a class="nav-link text-danger fw-bold" href="index.php?ruta=salir">Salir</a></li>
                 </ul>
             </div>
-        </div>
-    </nav>
+
+        <?php else: ?>
+            <!-- SIN SESIÓN: Botón directo visible en móvil y PC, sin hamburguesa -->
+            <div class="d-flex align-items-center gap-3">
+                <a class="nav-link d-none d-lg-block" href="index.php?ruta=inicio">Inicio</a>
+                <a href="index.php?ruta=login" class="btn-primary-custom px-3 px-md-4 py-2 text-decoration-none shadow-xs">
+                    <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesión
+                </a>
+            </div>
+        <?php endif; ?>
+
+    </div>
+</nav>
 
 <body>
